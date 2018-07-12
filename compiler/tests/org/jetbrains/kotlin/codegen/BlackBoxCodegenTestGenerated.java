@@ -9835,6 +9835,11 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
         public void testWithDefaultArg() throws Exception {
             runTest("compiler/testData/codegen/box/external/withDefaultArg.kt");
         }
+
+        @TestMetadata("externalClass.kt")
+        public void testExternalClass() throws Exception {
+            runTest("compiler/testData/codegen/box/external/externalClass.kt");
+        }
     }
 
     @TestMetadata("compiler/testData/codegen/box/fakeOverride")

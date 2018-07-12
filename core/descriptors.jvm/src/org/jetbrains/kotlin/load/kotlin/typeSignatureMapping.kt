@@ -135,7 +135,9 @@ fun <T : Any> mapType(
             }
 
             val jvmType =
-                if (mode.isForAnnotationParameter && KotlinBuiltIns.isKClass(descriptor)) {
+                if (descriptor.isExternal && mode != TypeMappingMode.CLASS_DECLARATION) {
+                    factory.createObjectType("java/lang/Object")
+                } else if (mode.isForAnnotationParameter && KotlinBuiltIns.isKClass(descriptor)) {
                     factory.javaLangClassType
                 } else {
                     typeMappingConfiguration.getPredefinedTypeForClass(descriptor.original)
