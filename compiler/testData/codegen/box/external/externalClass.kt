@@ -13,16 +13,29 @@ external class NativeClass {
 class UseNativeClass {
     companion object {
         @JvmStatic
-        fun use(native: NativeClass?) {
+        fun use(native: NativeClass?): NativeClass? {
             if (native != null) {
                 throw Exception("Strange ${native}")
             }
+            return native
         }
     }
 }
 
 fun box(): String {
-    UseNativeClass.use(null)
+    val nul : NativeClass? = UseNativeClass.use(null)
+    if (nul != null) {
+        return "Expecting null NativeClass: ${nul}"
+    }
+    val str : String? = nul as String?
+    if (str != null) {
+        return "Expecting null as String: ${str}"
+    }
+
+    val any : Any = "anything"
+    if (any is NativeClass) {
+        return "anything can be a native class"
+    }
 
     val useNativeClass = UseNativeClass::class.java
     try {
