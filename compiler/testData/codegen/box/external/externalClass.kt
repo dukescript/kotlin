@@ -7,7 +7,7 @@
 package foo
 
 external class NativeClass {
-
+    fun plus(x : Int, y : Int): Int
 }
 
 class UseNativeClass {
@@ -50,5 +50,20 @@ fun box(): String {
         return "Method not found in ${useNativeClass.getMethods()}"
     }
 
+    val nativeClass = NativeClass::class.java
+    try {
+        val method = nativeClass.getMethod("plus", NativeClass::class.java, Int::class.java, Int::class.java)
+        if (!java.lang.reflect.Modifier.isStatic(method.getModifiers())) {
+            return "External methods should be static: $method"
+        }
+        if (method.getParameterCount() != 3) {
+            return "Expecting three parameter but was: ${method.getParameters()}"
+        }
+        if (method.getParameterTypes()[0].getName() != "java.lang.Object") {
+            return "Expecting external class to be replaced by Object parameter: ${method.getParameterTypes()[0].getName()}"
+        }
+    } catch (ex: NoSuchMethodException) {
+        return "Method not found in ${nativeClass.getMethods()}"
+    }
     return "OK"
 }

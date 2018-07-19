@@ -207,7 +207,17 @@ public class AsmUtil {
             }
         }
 
-        if (functionDescriptor.getOriginal().isExternal()) {
+        boolean external = functionDescriptor.getOriginal().isExternal();
+        if (functionDescriptor.getOriginal() instanceof ClassConstructorDescriptor) {
+            // constructors cannot be native
+        } else {
+            DeclarationDescriptor cd = functionDescriptor.getOriginal().getContainingDeclaration();
+            if (cd instanceof org.jetbrains.kotlin.descriptors.ClassDescriptor) {
+                external |= ((org.jetbrains.kotlin.descriptors.ClassDescriptor) cd).isExternal();
+            }
+        }
+
+        if (external) {
             flags |= Opcodes.ACC_NATIVE;
         }
 

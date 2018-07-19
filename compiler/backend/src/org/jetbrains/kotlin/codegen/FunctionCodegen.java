@@ -395,7 +395,17 @@ public class FunctionCodegen {
             return;
         }
 
-        if (!functionDescriptor.isExternal()) {
+        boolean external = functionDescriptor.isExternal();
+        if (functionDescriptor.getOriginal() instanceof ClassConstructorDescriptor) {
+            // constructors cannot be native
+        } else {
+            DeclarationDescriptor cd = functionDescriptor.getOriginal().getContainingDeclaration();
+            if (cd instanceof org.jetbrains.kotlin.descriptors.ClassDescriptor) {
+                external |= ((org.jetbrains.kotlin.descriptors.ClassDescriptor) cd).isExternal();
+            }
+        }
+
+        if (!external) {
             generateMethodBody(mv, functionDescriptor, methodContext, jvmSignature, strategy, memberCodegen, state.getJvmDefaultMode());
         }
         else if (staticInCompanionObject) {
