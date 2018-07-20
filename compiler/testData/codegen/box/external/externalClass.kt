@@ -50,9 +50,9 @@ fun box(): String {
         return "Method not found in ${useNativeClass.getMethods()}"
     }
 
-    val nativeClass = NativeClass::class.java
+    val nativeClass = Class.forName("foo.NativeClass")
     try {
-        val method = nativeClass.getMethod("plus", NativeClass::class.java, Int::class.java, Int::class.java)
+        val method = nativeClass.getMethod("plus", Object::class.java, Integer.TYPE, Integer.TYPE)
         if (!java.lang.reflect.Modifier.isStatic(method.getModifiers())) {
             return "External methods should be static: $method"
         }
@@ -63,7 +63,7 @@ fun box(): String {
             return "Expecting external class to be replaced by Object parameter: ${method.getParameterTypes()[0].getName()}"
         }
     } catch (ex: NoSuchMethodException) {
-        return "Method not found in ${nativeClass.getMethods()}"
+        return "Method not found in ${nativeClass.getName()}"
     }
     return "OK"
 }

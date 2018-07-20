@@ -213,7 +213,10 @@ public class AsmUtil {
         } else {
             DeclarationDescriptor cd = functionDescriptor.getOriginal().getContainingDeclaration();
             if (cd instanceof org.jetbrains.kotlin.descriptors.ClassDescriptor) {
-                external |= ((org.jetbrains.kotlin.descriptors.ClassDescriptor) cd).isExternal();
+                if (((org.jetbrains.kotlin.descriptors.ClassDescriptor) cd).isExternal()) {
+                    external = true;
+                    flags |= Opcodes.ACC_STATIC;
+                }
             }
         }
 

@@ -181,7 +181,15 @@ class FunctionDescriptorResolver(
             if (receiverTypeRef != null) {
                 typeResolver.resolveType(headerScope, receiverTypeRef, trace, true)
             } else {
-                if (function is KtFunctionLiteral) expectedFunctionType.getReceiverType() else null
+                if (function is KtFunctionLiteral) {
+                    expectedFunctionType.getReceiverType()
+                } else {
+                    if (container is ClassDescriptor && container.isExternal()) {
+                        container.getDefaultType()
+                    } else {
+                        null
+                    }
+                }
             }
 
 
