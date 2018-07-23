@@ -34,9 +34,8 @@ class ExternalFunChecker : DeclarationChecker {
 
         val trace = context.trace
         if (descriptor !is ClassDescriptor) {
-            if (descriptor !is FunctionDescriptor) {
+            if (descriptor !is FunctionDescriptor && descriptor !is PropertyDescriptor) {
                 val target = when (descriptor) {
-                    is PropertyDescriptor -> "property"
                     else -> "non-function declaration"
                 }
                 trace.report(Errors.WRONG_MODIFIER_TARGET.on(declaration, KtTokens.EXTERNAL_KEYWORD, target))

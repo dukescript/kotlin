@@ -10,6 +10,8 @@ external class NativeClass {
     fun plus(x : Int, y : Int): Int
 }
 
+external val native: NativeClass
+
 class UseNativeClass {
     companion object {
         @JvmStatic
@@ -65,5 +67,27 @@ fun box(): String {
     } catch (ex: NoSuchMethodException) {
         return "Method not found in ${nativeClass.getName()}"
     }
+
+    val moduleClass = Class.forName("foo.ExternalClassKt")
+    try {
+        val method = moduleClass.getMethods().find {
+            it.getName() == "getNative"
+        }
+        if (method == null) {
+            throw NoSuchMethodException()
+        }
+        if (!java.lang.reflect.Modifier.isStatic(method.getModifiers())) {
+            return "Property getters should be static: $method"
+        }
+        if (method.getParameterCount() != 0) {
+            return "Expecting no parameters but was: ${method.getParameters()}"
+        }
+        if (method.getReturnType().getName() != "java.lang.Object") {
+            return "Expecting returned external class to be replaced by Object parameter: ${method.getParameterTypes()[0].getName()}"
+        }
+    } catch (ex: NoSuchMethodException) {
+        return "Method not found in ${moduleClass.getName()} found ${java.util.Arrays.toString(moduleClass.getMethods())}"
+    }
+
     return "OK"
 }
