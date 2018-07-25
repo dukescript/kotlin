@@ -1111,7 +1111,7 @@ public class DescriptorResolver {
         else {
             Annotations getterAnnotations = annotationSplitter.getAnnotationsForTarget(PROPERTY_GETTER);
             getterDescriptor = DescriptorFactory.createGetter(propertyDescriptor, getterAnnotations, !hasDelegate,
-                                                              /* isExternal = */ false, property.hasModifier(KtTokens.INLINE_KEYWORD));
+                                                              propertyDescriptor.isExternal(), property.hasModifier(KtTokens.INLINE_KEYWORD));
             getterType = propertyTypeIfKnown;
         }
 

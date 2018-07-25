@@ -21,6 +21,15 @@ class UseNativeClass {
             }
             return native
         }
+
+        @JvmStatic
+        fun checkField(): String? {
+            val realNative: NativeClass? = native
+            if (realNative != null) {
+                return "Nobody sets the realNative value: ${realNative}"
+            }
+            return null
+        }
     }
 }
 
@@ -93,6 +102,18 @@ fun box(): String {
         }
     } catch (ex: NoSuchMethodException) {
         return "Method not found in ${moduleClass.getName()} found ${java.util.Arrays.toString(moduleClass.getMethods())}"
+    }
+
+    try {
+        val readNativeField = UseNativeClass.checkField()
+        if (readNativeField != null) {
+            return readNativeField
+        }
+    } catch (ex: java.lang.UnsatisfiedLinkError) {
+        var exClass = ex::class
+        if (!exClass.java.getName().equals("java.lang.UnsatisfiedLinkError")) {
+            return "Unexpected error when calling native method: ${exClass}"
+        }
     }
 
     return "OK"
