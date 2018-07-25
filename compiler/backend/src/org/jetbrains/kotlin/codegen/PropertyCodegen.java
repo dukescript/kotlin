@@ -376,6 +376,10 @@ public class PropertyCodegen {
             Object defaultValue,
             Annotations annotations
     ) {
+        if (propertyDescriptor.isExternal()) {
+            return;
+        }
+
         int modifiers = getDeprecatedAccessFlag(propertyDescriptor);
 
         for (AnnotationCodegen.JvmFlagAnnotation flagAnnotation : AnnotationCodegen.FIELD_FLAGS) {

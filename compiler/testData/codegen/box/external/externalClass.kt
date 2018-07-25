@@ -85,6 +85,12 @@ fun box(): String {
         if (method.getReturnType().getName() != "java.lang.Object") {
             return "Expecting returned external class to be replaced by Object parameter: ${method.getParameterTypes()[0].getName()}"
         }
+
+        moduleClass.getDeclaredFields().forEach {
+            if (it.getName() == "native") {
+                return "there should be no field: ${it}"
+            }
+        }
     } catch (ex: NoSuchMethodException) {
         return "Method not found in ${moduleClass.getName()} found ${java.util.Arrays.toString(moduleClass.getMethods())}"
     }
