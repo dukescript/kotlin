@@ -51,6 +51,7 @@ import org.jetbrains.kotlin.resolve.scopes.HierarchicalScope
 import org.jetbrains.kotlin.resolve.scopes.LexicalScope
 import org.jetbrains.kotlin.resolve.scopes.MemberScope
 import org.jetbrains.kotlin.resolve.scopes.SyntheticScopes
+import org.jetbrains.kotlin.resolve.lazy.descriptors.LazyClassMemberScope
 import org.jetbrains.kotlin.resolve.scopes.receivers.*
 import org.jetbrains.kotlin.resolve.scopes.utils.canBeResolvedWithoutDeprecation
 import org.jetbrains.kotlin.types.DeferredType
@@ -162,6 +163,18 @@ class NewResolutionOldInference(
         tracing: TracingStrategy
     ): OverloadResolutionResultsImpl<D> {
         val explicitReceiver = context.call.explicitReceiver
+        val externalMethodCal = if (explicitReceiver is AbstractReceiverValue) {
+            val type = explicitReceiver.getType()
+            var scope = type.memberScope
+            if (scope is LazyClassMemberScope) {
+                println("This ${explicitReceiver} is external call: ${scope.isInExternalClass()}")
+                scope.isInExternalClass()
+            } else {
+                false
+            }
+        } else {
+            false
+        }
         val detailedReceiver = if (explicitReceiver is QualifierReceiver?) {
             explicitReceiver
         } else {

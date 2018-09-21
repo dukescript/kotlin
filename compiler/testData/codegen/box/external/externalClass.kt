@@ -6,8 +6,13 @@
 
 package foo
 
+class NormalClass {
+}
+
+fun NormalClass.plusTwo(x: Int, y: Int): Int = x + y
+
 external class NativeClass {
-    fun plus(x : Int, y : Int): Int
+    fun plusTwo(x: Int, y: Int): Int
 }
 
 external val native: NativeClass
@@ -29,6 +34,16 @@ class UseNativeClass {
                 return "Nobody sets the realNative value: ${realNative}"
             }
             return null
+        }
+
+        @JvmStatic
+        fun callPlus(n : NormalClass): Int {
+            return n.plusTwo(1, 2)
+        }
+
+        @JvmStatic
+        fun callPlusOnProperty(): Int {
+            return native.plusTwo(1, 2)
         }
     }
 }
@@ -63,7 +78,7 @@ fun box(): String {
 
     val nativeClass = Class.forName("foo.NativeClass")
     try {
-        val method = nativeClass.getMethod("plus", Object::class.java, Integer.TYPE, Integer.TYPE)
+        val method = nativeClass.getMethod("plusTwo", Object::class.java, Integer.TYPE, Integer.TYPE)
         if (!java.lang.reflect.Modifier.isStatic(method.getModifiers())) {
             return "External methods should be static: $method"
         }
@@ -116,5 +131,5 @@ fun box(): String {
         }
     }
 
-    return "OK"
+    return "Gen"
 }

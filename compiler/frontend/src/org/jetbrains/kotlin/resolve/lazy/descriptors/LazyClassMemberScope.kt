@@ -62,6 +62,10 @@ open class LazyClassMemberScope(
         computeExtraDescriptors(NoLookupLocation.FOR_ALREADY_TRACKED)
     }
 
+    fun isInExternalClass(): Boolean {
+        return this.thisDescriptor.isExternal()
+    }
+
     override fun getContributedDescriptors(
         kindFilter: DescriptorKindFilter,
         nameFilter: (Name) -> Boolean
